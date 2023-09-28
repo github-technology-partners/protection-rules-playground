@@ -1,0 +1,10 @@
+{
+    "name": "dpr-playground",
+    "version": "0.0.0",
+    "scripts": {
+        "test": "mocha src/index.test.js"
+    },
+    "devDependencies": {
+        "mocha": "^10.2.0"
+    }
+}
