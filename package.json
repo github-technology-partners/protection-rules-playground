@@ -5,6 +5,7 @@
         "test": "mocha src/index.test.js"
     },
     "devDependencies": {
+        "@pulumi/azure-native": "^2.15.0",
         "mocha": "^10.2.0"
     }
 }
