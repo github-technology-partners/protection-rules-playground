@@ -1,4 +1,5 @@
 config:
   azure-native:location: WestUS
+  azure:useOidc: "true"
   playground-azure:indexDocument: index.html
   playground-azure:path: ../src
