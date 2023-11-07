@@ -12,6 +12,9 @@ jobs:
   azure:
     name: Deploy to Azure
     runs-on: ubuntu-latest
+    environment:
+      name: azure
+      url: ${{ steps.azure-deployment.outputs.originURL }}
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
@@ -19,6 +22,7 @@ jobs:
         node-version: 18
     - run: npm ci
     - uses: pulumi/actions@v4
+      id: azure-deployment
       with:
         command: up
         stack-name: azure
