@@ -90,4 +90,4 @@ const bucketFolder = new synced_folder.S3BucketFolder("bucket-folder", {
 export const originURL = pulumi.interpolate`http://${bucket.websiteEndpoint}`;
 export const originHostname = bucket.websiteEndpoint;
 export const cdnURL = pulumi.interpolate`https://${cdn.domainName}`;
-export const cdnHostname = cdn.domainName;
+// export const cdnHostname = cdn.domainName;
