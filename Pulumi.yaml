@@ -1,3 +1,0 @@
-name: playground-azure
-runtime: nodejs
-description: A TypeScript program to deploy a static website on Azure
