@@ -27,6 +27,6 @@ jobs:
       with:
         command: preview
         stack-name: azure
-        work-dir: "./.pulumi/azure"
+        work-dir: "${{ github.workspace }}/.pulumi/azure"
       env:
         PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
