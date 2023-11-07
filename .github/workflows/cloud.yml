@@ -1,42 +1,93 @@
-name: Deploy to cloud infrastructure with OIDC
+name: Deploy to cloud infrastructure
 
 on:
   push:
     branches: ["pulumi"]
 
 permissions:
-  id-token: write
   contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
-  # azure:
-  #   name: Deploy to Azure
-  #   runs-on: ubuntu-latest
-  #   environment:
-  #     name: azure
-  #     url: ${{ steps.azure-deployment.outputs.originURL }}
-  #   steps:
-  #   - uses: actions/checkout@v3
-  #   - uses: actions/setup-node@v3
-  #     with:
-  #       node-version: 18
-  #   - run: npm ci
-  #   - uses: pulumi/actions@v4
-  #     id: azure-deployment
-  #     with:
-  #       command: up
-  #       stack-name: azure
-  #       work-dir: ".pulumi/azure"
-  #     env:
-  #       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-  #       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-  #       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-  #       ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-  #       ARM_USE_OIDC: true
+  unit:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: npm install
+      - name: Unit tests
+        run: npm test
+
+  integration:
+    name: Integration tests
+    needs: unit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: npm install
+      - name: Integration tests
+        run: npm test
+
+  deploy-pages:
+    name: Deploy to GitHub Pages
+    needs: integration
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          # Upload the source folder
+          path: "./src"
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
+
+  azure:
+    name: Deploy to Azure
+    runs-on: ubuntu-latest
+    needs: deploy-pages
+    environment:
+      name: azure
+      url: ${{ steps.azure-deployment.outputs.originURL }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18
+    - run: npm ci
+    - uses: pulumi/actions@v4
+      id: azure-deployment
+      with:
+        command: up
+        stack-name: azure
+        work-dir: ".pulumi/azure"
+      env:
+        PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+        ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        ARM_USE_OIDC: true
 
   aws:
     name: Deploy to AWS
     runs-on: ubuntu-latest
+    needs: deploy-pages
     environment:
       name: aws
       url: ${{ steps.aws-deployment.outputs.originURL }}
