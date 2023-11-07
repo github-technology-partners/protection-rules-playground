@@ -1,5 +1,4 @@
 config:
   aws:region: us-west-2
-  playground-aws:errorDocument: error.html
   playground-aws:indexDocument: index.html
-  playground-aws:path: ./www
+  playground-aws:path: ../../src
