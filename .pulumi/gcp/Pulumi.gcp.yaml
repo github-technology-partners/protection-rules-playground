@@ -1,0 +1,5 @@
+config:
+  gcp:project: tpe-demo
+  playground-gcp:errorDocument: error.html
+  playground-gcp:indexDocument: index.html
+  playground-gcp:path: ./www

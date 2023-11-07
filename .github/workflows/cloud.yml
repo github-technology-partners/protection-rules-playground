@@ -9,12 +9,37 @@ permissions:
   contents: read
 
 jobs:
-  azure:
-    name: Deploy to Azure
+  # azure:
+  #   name: Deploy to Azure
+  #   runs-on: ubuntu-latest
+  #   environment:
+  #     name: azure
+  #     url: ${{ steps.azure-deployment.outputs.originURL }}
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - uses: actions/setup-node@v3
+  #     with:
+  #       node-version: 18
+  #   - run: npm ci
+  #   - uses: pulumi/actions@v4
+  #     id: azure-deployment
+  #     with:
+  #       command: up
+  #       stack-name: azure
+  #       work-dir: ".pulumi/azure"
+  #     env:
+  #       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+  #       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  #       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  #       ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  #       ARM_USE_OIDC: true
+
+  aws:
+    name: Deploy to AWS
     runs-on: ubuntu-latest
     environment:
-      name: azure
-      url: ${{ steps.azure-deployment.outputs.originURL }}
+      name: aws
+      url: ${{ steps.aws-deployment.outputs.originURL }}
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
@@ -22,14 +47,13 @@ jobs:
         node-version: 18
     - run: npm ci
     - uses: pulumi/actions@v4
-      id: azure-deployment
+      id: aws-deployment
       with:
         command: up
-        stack-name: azure
-        work-dir: "${{ github.workspace }}/.pulumi/azure"
+        stack-name: aws
+        work-dir: ".pulumi/aws"
       env:
         PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-        ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-        ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-        ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-        ARM_USE_OIDC: true
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: "us-west-2"

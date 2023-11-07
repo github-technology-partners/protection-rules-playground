@@ -9,7 +9,9 @@
         "prettier": "^3.0.3"
     },
     "dependencies": {
+        "@pulumi/aws": "^6.8.0",
         "@pulumi/azure-native": "^2.15.0",
+        "@pulumi/gcp": "^6.67.1",
         "@pulumi/pulumi": "^3.92.0",
         "@pulumi/synced-folder": "^0.11.1"
     }

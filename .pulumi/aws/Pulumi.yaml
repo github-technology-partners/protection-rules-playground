@@ -1,0 +1,3 @@
+name: playground-aws
+runtime: nodejs
+description: A TypeScript program to deploy a static website on AWS
